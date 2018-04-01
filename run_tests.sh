@@ -1,5 +1,10 @@
 #!/usr/local/bin/bash
 
+if [ -d $HOME/.rbenv ]; then
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+fi
+
 spec_command="bundle exec spring rspec"
 test_command="bundle exec rails test"
 declare -A test_mapping=( ["spec"]="it|context|describe" ["test"]="test")
@@ -62,7 +67,9 @@ run_tests() {
                 full_file="$1:$2"
             fi
 
-            eval "${run_mapping[$type]} ${full_file}"
+            cmd="${run_mapping[$type]} ${full_file}"
+            echo $cmd
+            eval $cmd
 
             if [[ ${type} == "spec" ]]; then
                 cd - > /dev/null
